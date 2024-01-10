@@ -13,13 +13,16 @@
     apt:
       name: apache2
       state: latest
+    when: ansible_architecture == "x86_64" and  ansible_distribution == "ubuntu"
 
   - name: Add php support for Apache
     apt:
       name: libapache2-mod-php
       state: latest
+    when: ansible_distribution == "ubuntu"and ansible_architecture == "x86_64"
 
   - name: Install htop
     apt:
       name: htop
       state: latest
+    when: ansible_distribution == "ubuntu"and ansible_architecture == "x86_64"
