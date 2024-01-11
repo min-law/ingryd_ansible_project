@@ -4,39 +4,39 @@
   become: true
   tasks:
 
-  - name: update Repository Index
+# Plays for all hosts
+
+  - name: Install Updates (Rocky)
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "Rocky"
+
+  - name: Install Updates (Ubuntu)
     apt:
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
 
 
-  - name: Start httpd (Rocky)
-    tags: apache,centos,httpd
-    service:
-      name: httpd
-      state: started
-      enabled: yes
-    when: ansible_distribution == "Rocky"
+- hosts: all
+  become: true
+  roles:
+    - base
 
 
-  - name: install Apache, PHP support and Htop
-    apt:
-      name:
-        - apache2
-        - libapache2-mod-php
-        - htop
-      state: latest
-    when: ansible_distribution == "Ubuntu"
+- hosts: web_servers
+  become: true
+  roles:
+    - web_servers
 
-  - name: Install Unzip
-    package:
-      name: unzip
 
-  - name: Install OpenTofu
-    unarchive:
-      src: https://github.com/opentofu/opentofu/releases/download/v1.6.0-rc1/tofu_1.6.0-rc1_darwin_amd64.zip
-      dest: /usr/local/bin
-      remote_src: yes
-      mode: 0755
-      owner: root
-      group: root
+- hosts: db_servers
+  become: true
+  roles:
+    - db_servers
+
+
+- hosts: file_servers
+  become: true
+  roles:
+    - file_servers
