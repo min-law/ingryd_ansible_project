@@ -9,28 +9,6 @@
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
 
-  - name: Create oga user
-    tags: always
-    user:
-      name: oga
-      groups: root
-
-  - name: Add ssh key for Oga
-    tags: always
-    authorized_key:
-      user: oga
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTH3V4MmFezA/1i9WJg4wmpjuWeMOH/z9QHXpFYKt/7 ansible.pub"
-
-  - name: Add a sudoer file for oga
-    tags: always
-    copy:
-      src: sudoer_oga
-      dest: /etc/sudoers.d/oga
-      owner: root
-      group: root
-      mode: 0440
-
-
 
   - name: Start httpd (Rocky)
     tags: apache,centos,httpd
