@@ -2,27 +2,19 @@
 
 - hosts: all
   become: true
-  tasks: 
+  tasks:
 
   - name: update Repository Index
     apt:
-      update_cache: yes  
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
 
 
-  - name: install Apache
+  - name: install Apache, PHP support and Htop
     apt:
-      name: apache2
+      name:
+        - apache2
+        - libapache2-mod-php
+        - htop
       state: latest
-    when: ansible_architecture == "x86_64" and  ansible_distribution == "ubuntu"
-
-  - name: Add php support for Apache
-    apt:
-      name: libapache2-mod-php
-      state: latest
-    when: ansible_distribution == "ubuntu"and ansible_architecture == "x86_64"
-
-  - name: Install htop
-    apt:
-      name: htop
-      state: latest
-    when: ansible_distribution == "ubuntu"and ansible_architecture == "x86_64"
+    when: ansible_distribution == "Ubuntu"
