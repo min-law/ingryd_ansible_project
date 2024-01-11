@@ -1,0 +1,110 @@
+---
+# The following with update the Local Repositories for OracleLinux and Ubuntu Servers
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Install updates (Ubuntu)
+    tags: update,ubuntu
+    apt:
+      update_cache: yes
+      update_only: yes
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Create oga user
+    tags: always
+    user:
+      name: oga
+      group: root
+
+  - name: Add ssh key for Oga
+    tags: always
+    authorized_key:
+      user: oga
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTH3V4MmFezA/1i9WJg4wmpjuWeMOH/z9QHXpFYKt/7 ansible.pub"
+
+  - name: Add a sudoer file for oga
+    tags: always
+    copy:
+      src: sudoer_oga
+      dest: /etc/sudoers.d/oga
+      owner: root
+      groups: root
+      mode: 0440
+
+
+# Plays for web servers
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+# The following are installation for Ubuntu
+  - name: Update Repo Index, Install Apache, php support and telnet
+    tags: apache2,web_server,ubuntu
+    service:
+      name:
+        - apache2
+        - libapache2-mod-php
+        - telnet
+      state: started
+      enabled: yes
+    when: ansible_distribution == "Ubuntu"
+
+
+# The following are installation for Oracle Linux
+  - name: Install Apache, php support and telnet For Oracle Linux
+    tags: httpd,web_server,oracleLinux
+    apt:
+      name:
+        - httpd
+        - php
+        - telnet
+      state: latest
+    when:
+      - ansible_distribution == "Ubuntu"
+
+
+# Plays for file servers
+
+- hosts: file_servers
+  become: true
+  tasks:
+
+  - name: Install Samba (OracleLinux, Ubuntu)
+    tags: oracleLinux,ubuntu,samba,file_server
+    package:
+      name:
+        - samba
+      state: latest
+
+  - name: Install NFS SERVER (Ubuntu)
+    tags: ubuntu,nfs,file_server
+    apt:
+      name:
+        - nfs-kernel-server
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Copy instruction manual to home dir (OracleLinux, Ubuntu)
+    tags: copy,file_server,exercise2
+    copy:
+      src: instruction_manual.txt
+      dest: /home/lawrence
+      owner: zero
+      group: zero
+      mode: 0664
+
+  - name: Install Unzip
+    tags: copy,file_server
+    package:
+      name: unzip
+
+  - name: Install OpenToFu
+    unarchive:
+      src: https://github.com/opentofu/opentofu/releases/download/v1.6.0-rc1/tofu_1.6.0-rc1_darwin_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      owner: root
+      group: root
+      mode: 0755
