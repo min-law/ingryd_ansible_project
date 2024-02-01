@@ -96,4 +96,4 @@ Before running the playbooks, ensure the following prerequisites are met:
 
 Feel free to contribute to this Ansible project or raise issues if you encounter any problems. Happy automating!
 
-*Note: This documentation was authored by Stanley Chinedu Ogada. If you have any questions or encounter issues, feel free to reach out for personalized assistance.*
+*Note: This documentation was authored by Lawrence Akinyemi Akinboye. If you have any questions or encounter issues, feel free to reach out for personalized assistance.*
