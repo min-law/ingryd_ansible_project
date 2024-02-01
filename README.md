@@ -47,7 +47,7 @@ Before running the playbooks, ensure the following prerequisites are met:
 
 2. Clone the repository.
    ```bash
-   git clone https://github.com/stanleyogada/ingryd-ansible-project/.git
+   git clone https://github.com/min-law/ingryd_ansible_project/.git
    cd ingryd-ansible-project
    ```
 
